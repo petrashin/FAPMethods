@@ -16,7 +16,7 @@ def findDerivative(function, left_bound, right_bound, step):
     :params function: передается строка с функцией
     :params left_bound, right_bound: левая и правая границы
     :params step: шаг
-    :return: иттерационно возвращает точки в указанном интервале
+    :return: итерационно возвращает точки в указанном интервале
     """
     for i in arange(left_bound, right_bound, step):
         yield (function(i + step) - function(i - step)) / (2 * step)
@@ -29,7 +29,7 @@ def findIntegration(function, left_bound, right_bound, step, except_points):
     :params left_bound, right_bound: левая и правая границы
     :params step: шаг
     :params except_points: точки, где функция не существует
-    :return: иттерационно возвращает точки в указанном интервале
+    :return: итерационно возвращает точки в указанном интервале
     """
     summ = 0
     for i in arange(left_bound, right_bound, step):
@@ -61,7 +61,7 @@ def my_differentiation(left_bound, right_bound, step):
     :params function: передается строка с функцией
     :params left_bound, right_bound: левая и правая границы
     :params step: шаг
-    :return: списки точек в указанном интервле
+    :return: списки точек в указанном интервале
     """
     list_of_iterations, list_of_x_values, list_of_diff_values = [], [], []
     counter = 0
