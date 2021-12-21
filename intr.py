@@ -1,11 +1,17 @@
+import numpy
+import sympy
+import numpy as np
+import scipy.optimize
+
 
 def chebishevPoints(x_values, y_values, n):
     a = min(x_values)
     b = max(y_values)
     result = []
     for i in range(1, n+1):
-      result.append(0.5*(a+b) + 0.5*(b-a)*numpy.cos((2*i-1)/2/n*numpy.pi))
+        result.append(0.5*(a+b) + 0.5*(b-a)*numpy.cos((2*i-1)/2/n*numpy.pi))
     return result
+
 
 def lagrx(x_values, y_values):
     ratio = (max(x_values)-min(x_values))/len(x_values)
@@ -17,17 +23,19 @@ def lagrx(x_values, y_values):
     else:
         return lagrx_standart(x_values, y_values)
 
+
 def lagrx_standart(x_values, y_values):
     x0 = sympy.Symbol('x')
     s = 0
     for i in range(len(x_values)):
-      t1 = 1
-      t2 = 1
-      for j in range(len(x_values)):
-        t1 *= x0-x_values[j] if i!=j else 1
-        t2 *= x_values[i] - x_values[j] if i!=j else 1
-      s += y_values[i]*(t1/t2)
+        t1 = 1
+        t2 = 1
+        for j in range(len(x_values)):
+            t1 *= x0-x_values[j] if i != j else 1
+            t2 *= x_values[i] - x_values[j] if i != j else 1
+        s += y_values[i]*(t1/t2)
     return x_values, y_values, [sympy.simplify(s).subs(x0, x_values[i]) for i in x_values]
+
 
 def lagr_cheb(x_values, y_values):
     x0 = sympy.Symbol('x')
@@ -37,41 +45,45 @@ def lagr_cheb(x_values, y_values):
     last_error = None
 
     for power in range(3, 50):
-      xx = list(set(rounded_x) & set(round(i, 1) for i in chebishevPoints(x_values,y_values, power)))
-      s = 0
-      if len(xx) != power:
-        continue
+        xx = list(set(rounded_x) & set(round(i, 1)
+                  for i in chebishevPoints(x_values, y_values, power)))
+        s = 0
+        if len(xx) != power:
+            continue
 
-      for i in range(len(xx)):
-        t1 = 1
-        t2 = 1
-        for j in range(len(xx)):
-          t1 *= x0-xx[j] if i!=j else 1
-          t2 *= xx[i] - xx[j] if i!=j else 1
-        s += y_values[rounded_x.index(xx[i])]*(t1/t2)
-        
-      error = lagr_error(x_values, y_values, sympy.lambdify(x0, s))
-      if last_error is not None and error > last_error*2:
-        return x_values, y_values, [last_poly.subs(x0, x_values[i]) for i in x_values]
-      if (last_error is None or last_error > error):
-        last_error = error
-        last_poly = s
-    
+        for i in range(len(xx)):
+            t1 = 1
+            t2 = 1
+            for j in range(len(xx)):
+                t1 *= x0-xx[j] if i != j else 1
+                t2 *= xx[i] - xx[j] if i != j else 1
+            s += y_values[rounded_x.index(xx[i])]*(t1/t2)
+
+        error = lagr_error(x_values, y_values, sympy.lambdify(x0, s))
+        if last_error is not None and error > last_error*2:
+            return x_values, y_values, [last_poly.subs(x0, x_values[i]) for i in x_values]
+        if last_error is None or last_error > error:
+            last_error = error
+            last_poly = s
+
     if last_poly is not None:
-      return x_values, y_values, [last_poly.subs(x0, x_values[i]) for i in x_values]
+        return x_values, y_values, [last_poly.subs(x0, x_values[i]) for i in x_values]
     return last_poly
+
 
 def lagr_error(x_values, y_values, poly):
     maxx = 0
     for i, x in enumerate(x_values):
-      m = abs(y_values[i]-poly(x))
-      if m > maxx:
-        maxx = m
+        m = abs(y_values[i]-poly(x))
+        if m > maxx:
+            maxx = m
     return maxx
 
-def newtons_interpolation(x_values, y_values, isForward=True):
+
+def newtons_interpolation(x_values, y_values, is_forward=True):
     x0 = sympy.symbols('x')
     n_res = len(x_values)
+    interpol = []
 
     def poly_newton_coefficient(x, y):
         m = len(x)
@@ -85,35 +97,36 @@ def newtons_interpolation(x_values, y_values, isForward=True):
     def newton_first(x, y):
         x_res = sympy.symbols('x')
         a = poly_newton_coefficient(x, y)
-        res = 0
+        result = 0
         for i in range(len(a)):
             factor = a[i]
             for j in range(i):
                 factor *= (x_res - x[j])
-            res += factor
-        return sympy.simplify(res)
+            result += factor
+        return sympy.simplify(result)
 
     def newton_second(x, y):
         x_res = sympy.symbols('x')
         a = poly_newton_coefficient(x[::-1], y[::-1])
         n = len(a)
-        res = 0
+        result = 0
         for i in range(n):
             factor = a[i]
             for j in range(n - 1, n - 1 - i, -1):
                 factor *= (x_res - x[j])
-            res += factor
-        return sympy.simplify(res)
+            result += factor
+        return sympy.simplify(result)
 
-    if isForward:
+    if is_forward:
         res = newton_first(x_values, y_values)
         interpol = [res.subs(x0, x_values[i]) for i in range(n_res)]
 
-    elif isForward is False:
+    elif is_forward is False:
         res = newton_second(x_values, y_values)
         interpol = [res.subs(x0, x_values[i]) for i in range(n_res)]
 
-    return x_values, y_values, interpol 
+    return x_values, y_values, interpol
+
 
 def linear_function_approximation(x_values, y_values):
     n = len(x_values)
@@ -131,15 +144,10 @@ def linear_function_approximation(x_values, y_values):
 
     f_values = [yy.subs(xx, x_values[i]) for i in range(n)]
 
-    print("Апроксимация линейной функцией:")
-    print_table(x_values, y_values, f_values)
-    print("Вид апроксимирующей функции:", yy)
-    print("Величина дисперсии:", math.sqrt(sum([(y_values[i] - f_values[i]) ** 2 for i in range(len(x_values))])))
-
     return x_values, y_values, f_values
 
 
-def quadratic_function_approximation(x_values, y_values, need_to_print_table):
+def quadratic_function_approximation(x_values, y_values):
     n = len(x_values)
     xx = sympy.Symbol('x')
     s1, s2, s3, s4, s5, s6, s7 = 0, 0, 0, 0, 0, 0, 0
@@ -164,12 +172,6 @@ def quadratic_function_approximation(x_values, y_values, need_to_print_table):
 
     f_values = [yy.subs(xx, x_values[i]) for i in range(n)]
 
-    print("Апроксимация квадратичной функцией:")
-    if need_to_print_table:
-        print_table(x_values, y_values, f_values)
-    print("Вид апроксимирующей функции:", yy)
-    print("Величина дисперсии:", math.sqrt(sum([(y_values[i] - f_values[i]) ** 2 for i in range(len(x_values))])))
-
     return x_values, y_values, f_values
 
 
@@ -193,13 +195,9 @@ def normal_distribution_approximation(x_values, y_values):
     bnds = ((-np.inf, np.inf), (-np.inf, np.inf), (0, None))
     res = scipy.optimize.minimize(t3, [my, mx, length], bounds=bnds)
 
-    yy = sympy.simplify(res.x[0] * sympy.exp(-(x - res.x[1]) ** 2 / (2 * res.x[2] ** 2)))
+    yy = sympy.simplify(
+        res.x[0] * sympy.exp(-(x - res.x[1]) ** 2 / (2 * res.x[2] ** 2)))
     f_values = [yy.subs(x, x_values[i]) for i in range(n)]
-
-    print("Апроксимация функцией нормального распределения:")
-    print_table(x_values, y_values, f_values)
-    print("Вид апроксимирующей функции:", yy)
-    print("Величина дисперсии:", math.sqrt(sum([(y_values[i] - f_values[i]) ** 2 for i in range(len(x_values))])))
 
     return x_values, y_values, f_values
 
@@ -208,9 +206,9 @@ def interpolate(x_values, y_values, method="lagr"):
     if method == "lagr":
         return lagrx(x_values=x_values, y_values=y_values)
     elif method == "newton1":
-        return newtons_interpolation(x_values=x_values, y_values=y_values, isForward=True)
+        return newtons_interpolation(x_values=x_values, y_values=y_values, is_forward=True)
     elif method == "newton2":
-        return newtons_interpolation(x_values=x_values, y_values=y_values, isForward=False)
+        return newtons_interpolation(x_values=x_values, y_values=y_values, is_forward=False)
     else:
         raise "Неверный метод"
 
@@ -219,7 +217,7 @@ def approximate(x_values, y_values, method='quadratic'):
     if method == "linear":
         return linear_function_approximation(x_values=x_values, y_values=y_values)
     elif method == "quadratic":
-        return quadratic_function_approximation(x_values=x_values, y_values=y_values, need_to_print_table=False)
+        return quadratic_function_approximation(x_values=x_values, y_values=y_values)
     elif method == "newton2":
         return normal_distribution_approximation(x_values=x_values, y_values=y_values)
     else:

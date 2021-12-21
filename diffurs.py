@@ -1,3 +1,7 @@
+from math import *
+import statistics
+
+
 def parse_function(s: str):
     if "z'" in s:
         variable = 'z'
@@ -46,6 +50,7 @@ def parse_function(s: str):
 
     return result[result.index("=") + 1:]
 
+
 def calculate(s, x, y, z=0):
     return eval(s)
 
@@ -62,6 +67,7 @@ def eulers_method(f, x0, y0, n, h):
         y0 = y
     return i_r, x_r, y_r
 
+
 def euler_cauchy_method(f, x0, y0, n, h):
     i_r, x_r, y_r = [], [], []
     for i in range(n):
@@ -74,6 +80,7 @@ def euler_cauchy_method(f, x0, y0, n, h):
         x0 = x
         y0 = y
     return i_r, x_r, y_r
+
 
 def runge_kutta_method(f, x0, y0, n, h):
     i_r, x_r, y_r = [], [], []
@@ -114,42 +121,6 @@ def runge_kutta_method_for_system(f1, f2, x0, y0, z0, n, h):
         y0 = y
         z0 = z
     return i_r, x_r, y_r, z_r
-
-def get_inputs():
-    isSystem = True if input("Хотите ли вы решать систему уравнений? y/n: ") == 'y' else False
-    needTable = True if input("Вывести решение в виде таблицы? y/n: ") == 'y' else False
-    if not(isSystem):
-        function = input("Введите дифференциальное уравнение: ")
-        x0, y0 = map(float, input("Введите через пробел начальные условия: ").split())
-        a, b = map(float, input("Введите через пробел исследуемый интервал: ").split())
-        n = 10000
-        h = (b - a) / n
-        methods = {'1': eulers_method, '2': euler_cauchy_method, '3': runge_kutta_method}
-        choose_methods = input("Введите метод, которым хотите решить дифференциальное уравнение (1 - метод Эйлера, 2 - метод Эйлера-Коши, 3 - метод Рунге-Кутты): ")
-        method = methods.get(choose_methods)
-        print()
-        return {'needTable': needTable, 'function_1': function, 'x0': x0, 'y0': y0, 'n': n, 'h': h, 'method': method, 'a': a, 'b': b, 'num_of_method': choose_methods}
-    else:
-        function_1 = input("Введите певрое дифференциальное уравнение: ")
-        function_2 = input("Введите второе дифференциальное уравнение: ")
-        x0, y0, z0 = map(float, input("Введите через пробел начальные условия: ").split())
-        a, b = map(float, input("Введите через пробел исследуемый интервал: ").split())
-        n = 10000
-        h = (b - a) / n
-        return {'needTable': needTable, 'function_1': function_1, 'function_2': function_2, 'x0': x0, 'y0': y0, 'z0': z0, 'n': n, 'h': h, 'a': a, 'b': b}
-
-def main(needTable=False, function_1=None, function_2=None, x0=None, y0=None, z0=None, n=None, h=None, method=None, a=None, b=None, coeff=1, num_of_method=None):
-    h /= coeff
-    if function_2:
-        i_lst, x_lst, y_lst, z_lst = runge_kutta_method_for_system(parse_function(function_1), parse_function(function_2), x0, y0, z0, n, h)
-        makeApr_y = IntApr(x=x_lst, y=y_lst)
-        makeApr_z = IntApr(x=x_lst, y=z_lst)
-        print("Апроксимирующая функция МНК для y:", makeApr_y.quadratic_function_approximation())
-        print("Апроксимирующая функция МНК для z:", makeApr_z.quadratic_function_approximation())
-    else:
-        i_lst, x_lst, y_lst = method(parse_function(function_1), x0, y0, n, h)
-
-    return x_lst, y_lst, method
 
 
 def accuracy_assessment(first_list, second_list, method='1'):
