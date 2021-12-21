@@ -1,7 +1,7 @@
 import numpy as np
-# from pywavelets import wavedec
 from pywt import wavedec
 from typing import List
+
 
 def fft_impl(x_array: List):
     x_array = np.array(x_array)
@@ -38,9 +38,10 @@ def non_sinusoidal_coefficient(y: List, t: str):
     a4 = np.std(wavedec(y, t, level=4)[0])
     return ((d1 ** 2 + d2 ** 2 + d3 ** 2 + d4 ** 2) ** 0.5) / a4
 
+
 def nonsinFurie(data: List):
     y = fft(data)
     y_max = max(y)
     y_sum = sum(y) - y_max
 
-    return y_max/y_sum
+    return y_max / y_sum
