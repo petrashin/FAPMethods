@@ -1,7 +1,7 @@
 from numpy import arange, isinf, isnan
 
 
-def func(x):
+def func(function):
     return eval(function)
 
 
@@ -10,10 +10,10 @@ def findDerivative(function, left_bound, right_bound, step):
         yield (function(i + step) - function(i - step)) / (2 * step)
 
 
-def findIntegration(function, left_bound, right_bound, step, exceptPoints):
+def findIntegration(function, left_bound, right_bound, step, except_points):
     summ = 0
     for i in arange(left_bound, right_bound, step):
-        if round(i, 5) not in exceptPoints:
+        if round(i, 5) not in except_points:
             summ += function(i)
     summ += (function(left_bound) + function(right_bound)) / 2
     summ *= step
