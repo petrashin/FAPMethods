@@ -4,6 +4,11 @@ from typing import List
 
 
 def fft_impl(x_array: List):
+    """
+    Функция проводящая быстрое преобразование Фурье
+    :params x_array: массив точек
+    :return: возвращает элементы ряда Фурье
+    """
     x_array = np.array(x_array)
     N = x_array.shape[0]
     if N % 2 > 0:
@@ -24,11 +29,22 @@ def fft_impl(x_array: List):
 
 
 def fft(arr: List):
+    """
+    Функция проводящая быстрое преобразование Фурье с дополнением до степени 2
+    :params x_array: массив точек
+    :return: возвращает элементы ряда Фурье
+    """
     t1 = arr + [0]*(2**int(np.ceil(np.math.log2(len(arr))))-len(arr))
     return fft_impl(t1)
 
 
 def non_sinusoidal_coefficient(y: List, t: str):
+    """
+    Функция, которая возвращает коэффициент несуцидиальности
+    :params y: список точек
+    :params t: тип вейвлета
+    :return: коэффициент несуцидиальности
+    """
     y8 = round(len(y)*0.08)
     y = y[y8:-y8]
     d1 = np.std(wavedec(y, t, level=1)[1])
@@ -40,6 +56,11 @@ def non_sinusoidal_coefficient(y: List, t: str):
 
 
 def nonsinFurie(data: List):
+    """
+    Функция, которая возвращает коэффициент несуцидиальности для преобразования Фурье
+    :params data: элементы ряда Фурье
+    :return: коэффициент несуцидиальности
+    """
     y = fft(data)
     y_max = max(y)
     y_sum = sum(y) - y_max
