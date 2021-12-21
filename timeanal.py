@@ -1,4 +1,8 @@
 def fft_impl(x_array):
+    """
+
+    """
+
     #x_array += [0]*(2**int(numpy.ceil(numpy.math.log2(len(x_array))))-len(x_array))
     x_array = np.array(x_array)
     N = x_array.shape[0]

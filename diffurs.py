@@ -3,6 +3,11 @@ import statistics
 
 
 def parse_function(s: str):
+    """
+    Функция перевода в необходимый для решения формат
+    :param s: передаётся строка с функцией
+    :return: возвращается строка с небоходимым для решения форматом
+    """
     if "z'" in s:
         variable = 'z'
     else:
@@ -52,10 +57,25 @@ def parse_function(s: str):
 
 
 def calculate(s, x, y, z=0):
+    """
+    Функция, которая вычисляет функцию в точке, определяему как F(x, y), либо как F(x, y, z)
+    :params s: передается строка с функцией
+    :return: выводит значение функции в заданной точке
+
+
+    """
     return eval(s)
 
 
 def eulers_method(f, x0, y0, n, h):
+    """
+    Функция вычисления диф. уравнения с помощью метода Эйлера
+    :params f: функция
+    :params x0, y0: начальные условия
+    :params n: количество иттераций
+    :params h:  шаг
+    :return: возвращает номер точки и значение ур-я по x, y
+    """
     i_r, x_r, y_r = [], [], []
     for i in range(n):
         y = y0 + h * calculate(f, x0, y0)
@@ -69,6 +89,14 @@ def eulers_method(f, x0, y0, n, h):
 
 
 def euler_cauchy_method(f, x0, y0, n, h):
+    """
+       Функция вычисления диф. уравнения с помощью метода Эйлера-Коши
+       :params f: функция
+       :params x0, y0: начальные условия
+       :params n: количество иттераций
+       :params h:  шаг
+       :return: возвращает номер точки и значение ур-я по x, y
+       """
     i_r, x_r, y_r = [], [], []
     for i in range(n):
         y1 = y0 + h * calculate(f, x0, y0)
@@ -83,6 +111,14 @@ def euler_cauchy_method(f, x0, y0, n, h):
 
 
 def runge_kutta_method(f, x0, y0, n, h):
+    """
+       Функция вычисления диф. уравнения с помощью метода Рунге-Кутты
+       :params f: функция
+       :params x0, y0: начальные условия
+       :params n: количество иттераций
+       :params h:  шаг
+       :return: возвращает номер точки и значение ур-я по x, y
+       """
     i_r, x_r, y_r = [], [], []
     for i in range(n):
         k1 = h * calculate(f, x0, y0)
@@ -100,6 +136,14 @@ def runge_kutta_method(f, x0, y0, n, h):
 
 
 def runge_kutta_method_for_system(f1, f2, x0, y0, z0, n, h):
+    """
+       Функция вычисления систем диф. уравнений с помощью метода Рунге-Кутты
+       :params f: функция
+       :params x0, y0: начальные условия
+       :params n: количество иттераций
+       :params h:  шаг
+       :return: возвращает номер точки и значение ур-я по x, y, z
+       """
     i_r, x_r, y_r, z_r = [], [], [], []
     for i in range(n):
         k1 = h * calculate(f1, x0, y0, z0)
@@ -124,6 +168,11 @@ def runge_kutta_method_for_system(f1, f2, x0, y0, z0, n, h):
 
 
 def accuracy_assessment(first_list, second_list, method='1'):
+    """
+    Функция подсчёта точности выполненных вычислений между двумя списками
+    :params first_list, second_list: списки, по которым будут проведены вычисления точности
+    :params method: параметр выбора метода подсчёта(1 - Метод Эйлера, 2 - Метод Эйлера-Коши, 3 - Метод Рунге-Кутты)
+    """
     if method in ['1', '2']:
         p = 2
     else:
