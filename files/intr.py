@@ -14,6 +14,12 @@ def chebishevPoints(x_values, y_values, n):
 
 
 def lagrx(x_values, y_values):
+    """
+    функция, вызывающая интерполяцию методом Лагранжа
+    :params: массив точек x
+    :params: массив точек y
+    :return: массив точек и интерполяционный член Лагранжа
+    """
     ratio = (max(x_values)-min(x_values))/len(x_values)
     if len(x_values) >= 60 and ratio < 1:
         result = lagr_cheb(x_values, y_values)
@@ -25,6 +31,14 @@ def lagrx(x_values, y_values):
 
 
 def lagrx_standart(x_values, y_values):
+    """
+    Функция, выполняющая интерполяцию методом Лагранжа (в том случае, если длина массива x < 60 и среднее > 1 или нет
+    результата от lagr_cheb)
+    :params: массив точек x
+    :params: массив точек y
+    :return: массив точек x,
+    y и интерполяционный член Лагранжа
+    """
     x0 = sympy.Symbol('x')
     s = 0
     for i in range(len(x_values)):
@@ -38,6 +52,9 @@ def lagrx_standart(x_values, y_values):
 
 
 def lagr_cheb(x_values, y_values):
+    """
+    Функция,
+    """
     x0 = sympy.Symbol('x')
 
     rounded_x = [round(i, 1) for i in x_values]
