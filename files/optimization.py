@@ -32,29 +32,29 @@ class TSP:
     @property
     def n(self):
         """
-        Функция, дающая кортеж размеров массива.
+        Возвращает число - количество вершин.
         :params: self
-        :return: кортеж размеров массива.
+        :return: количество вершин графа.
         """
         return self.matrix.shape[0]
 
     @property
     def matrix(self):
         """
-        функция, возвращающая копию матрицы (array)
+        Матрица весов
         :params: self
-        :return: copy array нашей matrix
+        :return: копия матрицы весов
         """
         return self.__matrix.copy()
 
     @classmethod
     def random(cls, n, bottom_limit=1, upper_limit=10, orientated=False):
         """
-        Метод в классе, генерирующий матрицу
+        Метод в классе, генерирующий связанный граф со случайными весами
         :params: n - размерность
-        :params: bottom_limit - лимит, ниже которого не может сгенерироваться
-        :params: upper_limit - лимит, выше которого не может сгенерироваться
-        :params: orientated - ориентированная ли матрица
+        :params: bottom_limit - минимальный вес ребра
+        :params: upper_limit - максимальный вес ребра
+        :params: orientated - ориентированный ли граф
         :return: Возвращается созданный объект класса
         """
         # method = uniform
@@ -144,8 +144,10 @@ class TSP:
 
         def score_func(table_):
             """
-            функция
-            """# приведенная матрица
+            Целевая функция
+            :params: table_ таблица весов
+            :return: приведенная таблица весов, нижняя границу
+            """
             assert table_.shape[0] > 0
             table = table_.copy()
 
@@ -173,7 +175,7 @@ class TSP:
             """
             функция нахождения самого "тяжелого" нуля
             :params: table (см. выше)
-            :return: самый тяжелый ноль (в виде таблицы с индексом и числом)
+            :return: ребра с самым тежелым ребром
             """
             assert table.shape[0] > 0
             max_zero = 0  # самый тяжелый ноль
@@ -195,7 +197,9 @@ class TSP:
 
         def include(leaf_):
             """
-            функция поис
+            функция включения ребра в путь
+            :params: объект содержащий матрицу весов, ребро для включения, включенние ребра, нижнюю границу
+            :return: объект с включенним ребром
             """
             assert leaf_.table.shape[0] > 0
             table = leaf_.table.copy()
@@ -216,6 +220,12 @@ class TSP:
             return leaf(table, bottom_bound, included, edge)
 
         def exclude(leaf_):
+            """
+            функция исключения ребра из пути
+            :params: объект содержащий матрицу весов, ребро для исключения, включенные ребра, нижнюю границу
+            :return: объект с включенним ребром
+            """
+
             assert leaf_.table.shape[0] > 0
             table = leaf_.table.copy()
             i, j = leaf_.edge
@@ -264,7 +274,7 @@ class TSP:
         """
         функция поиска "стоимости" пути
         :params: путь, найденный выше
-        :return: стоимость пути (число)
+        :return: путь, стоимость пути
         """
         c = 0
         i = 0
@@ -277,12 +287,14 @@ class TSP:
         return c
 
     @timer
-    def Boltsman(self, t0=1, tmin=0.001):
+    def Boltsman(self, t0=1000):
         """
-        функция
+        Реализация метода имитации Больцмановского отжига
+        :params: t0 начальная температура
+        :return: стоимость пути (число)
         """
         def t(k):
-            return t0 / np.log(1 + k)
+            return t0 / (k**0.8)
 
         def isTransit(x0, x, ct):
             df = self.countPathCost(x) - self.countPathCost(x0)
@@ -318,12 +330,22 @@ class TSP:
         return x, self.countPathCost(x)
 
     @timer
-    def AntColonyMethod(self, n_ants=None, n_best=5, n_iterations=None, decay=0.95, alpha=1, beta=1):
+    def AntColonyMethod(self, n_ants=None, n_best=5, n_iterations=None):
+        """
+        Реализация Муравьиного алгоритма
+        :params: кол-во муравьев
+        :params:
+        :params: кол-во итераций
+
+        :return: кратчайший цикл, длина цикла
+        """
         if n_ants:
             n_ants = self.n
         if n_iterations:
             n_iterations = self.n * 4
-
+        decay = 0.95
+        alpha = 1
+        beta = 1
         class AntColony:
             def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha, beta):
 
