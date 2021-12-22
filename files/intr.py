@@ -5,6 +5,12 @@ import scipy.optimize
 
 
 def chebishevPoints(x_values, y_values, n):
+    """
+    Функция, рассчитывающая значения в точках функции Чебышева
+    :params x_values: массив точек x
+    :params y_values: массив точек y
+    :return: значения в точках функции
+    """
     a = min(x_values)
     b = max(y_values)
     result = []
@@ -32,12 +38,10 @@ def lagrx(x_values, y_values):
 
 def lagrx_standart(x_values, y_values):
     """
-    Функция, выполняющая интерполяцию методом Лагранжа (в том случае, если длина массива x < 60 и среднее > 1 или нет
-    результата от lagr_cheb)
+    Функция, выполняющая интерполяцию методом Лагранжа для всех точек
     :params x_values: массив точек x
     :params y_values: массив точек y
-    :return: массив точек x,
-    y и интерполяционный член Лагранжа
+    :return: массив точек x,y и интерполяционный член Лагранжа
     """
     x0 = sympy.Symbol('x')
     s = 0
@@ -53,7 +57,7 @@ def lagrx_standart(x_values, y_values):
 
 def lagr_cheb(x_values, y_values):
     """
-    Функция,выполняющая интерполяцию методом Лагранжа (?) (в том случае, если длина массива x > 60 и среднее < 1)
+    Функция, выполняющая интерполяцию методом Лагранжа для Чебышева
     :params x_values: массив точек x
     :params y_values: массив точек y
     """
@@ -91,6 +95,13 @@ def lagr_cheb(x_values, y_values):
 
 
 def lagr_error(x_values, y_values, poly):
+    """
+    Функция для расчета Taylor remainder theorem
+    :params x_values: массив точек x
+    :params y_values: массив точек y
+    :params poly: Ваш полином для расчета
+    :return: найденная точка
+    """
     maxx = 0
     for i, x in enumerate(x_values):
         m = abs(y_values[i]-poly(x))
@@ -173,6 +184,12 @@ def newtons_interpolation(x_values, y_values, is_forward=True):
 
 
 def linear_function_approximation(x_values, y_values):
+    """
+    Функция для аппроксимации линейной функцией
+    :params x_values: массив точек x
+    :params y_values: массив точек y
+    :return: массив точек x,y и вид аппроксимирующей функции
+    """
     n = len(x_values)
     xx = sympy.Symbol('x')
     s1, s2, s3, s4 = 0, 0, 0, 0
@@ -192,6 +209,12 @@ def linear_function_approximation(x_values, y_values):
 
 
 def quadratic_function_approximation(x_values, y_values):
+    """
+    Функция для аппроксимации квадратичной функцией
+    :params x_values: массив точек x
+    :params y_values: массив точек y
+    :return: массив точек x,y и вид аппроксимирующей функции
+    """
     n = len(x_values)
     xx = sympy.Symbol('x')
     s1, s2, s3, s4, s5, s6, s7 = 0, 0, 0, 0, 0, 0, 0
@@ -220,6 +243,12 @@ def quadratic_function_approximation(x_values, y_values):
 
 
 def normal_distribution_approximation(x_values, y_values):
+    """
+    Функция для аппроксимации квадратичной функцией
+    :params x_values: массив точек x
+    :params y_values: массив точек y
+    :return: массив точек x,y и вид аппроксимирующей функции
+    """
     n = len(x_values)
 
     def t3(value):
@@ -247,6 +276,12 @@ def normal_distribution_approximation(x_values, y_values):
 
 
 def interpolate(x_values, y_values, method="lagr"):
+    """
+    Функция, позволяющая выбрать необходимый метод для интерполяции
+    :params x_values: массив точек x
+    :params y_values: массив точек y
+    :params method: выбранный метод
+    """
     if method == "lagr":
         return lagrx(x_values=x_values, y_values=y_values)
     elif method == "newton1":
@@ -258,6 +293,12 @@ def interpolate(x_values, y_values, method="lagr"):
 
 
 def approximate(x_values, y_values, method='quadratic'):
+    """
+    Функция, позволяющая выбрать необходимый метод для аппроксимации
+    :params x_values: массив точек x
+    :params y_values: массив точек y
+    :params method: выбранный метод
+    """
     if method == "linear":
         return linear_function_approximation(x_values=x_values, y_values=y_values)
     elif method == "quadratic":
