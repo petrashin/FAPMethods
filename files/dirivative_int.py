@@ -58,7 +58,6 @@ def findExceptions(function, left_bound, right_bound):
 def my_differentiation(left_bound, right_bound, step):
     """
     Функция - генератор поиска производной
-    :params function: передается строка с функцией
     :params left_bound, right_bound: левая и правая границы
     :params step: шаг
     :return: списки точек в указанном интервале
