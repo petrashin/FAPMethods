@@ -12,7 +12,7 @@ def timer(func):
     выполнение декорируемой функции
     """
 
-    def wrapped_func(*args, **kwargs):  # реализация обёртки
+    def wrapped_func(*args, **kwargs):
         started_at = time.time()
         result = func(*args, **kwargs)
         ended_at = time.time()
@@ -31,14 +31,32 @@ class TSP:
 
     @property
     def n(self):
+        """
+        Функция, дающая кортеж размеров массива.
+        :params: self
+        :return: кортеж размеров массива.
+        """
         return self.matrix.shape[0]
 
     @property
     def matrix(self):
+        """
+        функция, возвращающая копию матрицы (array)
+        :params: self
+        :return: copy array нашей matrix
+        """
         return self.__matrix.copy()
 
     @classmethod
     def random(cls, n, bottom_limit=1, upper_limit=10, orientated=False):
+        """
+        Метод в классе, генерирующий матрицу
+        :params: n - размерность
+        :params: bottom_limit - лимит, ниже которого не может сгенерироваться
+        :params: upper_limit - лимит, выше которого не может сгенерироваться
+        :params: orientated - ориентированная ли матрица
+        :return: Возвращается созданный объект класса
+        """
         # method = uniform
         method = randint
         matrix = np.empty((n, n))
@@ -64,7 +82,11 @@ class TSP:
 
     @classmethod
     def keybord_input(cls, n):
-
+        """
+        Метод в классе, позволяющий ввести матрицу с клавиатуры
+        :params: n - размерность
+        :return: Возвращается созданный объект класса
+        """
         matrix = np.empty((n, n))
         for i in range(n):
             for j in range(n):
@@ -77,6 +99,11 @@ class TSP:
 
     @timer
     def branchNBound(self):
+        """
+        Функция, реализующая метод ветвей и границ
+        :params: self
+        :return: вычисленный итоговый путь + его длина
+        """
         n_rows = self.matrix.shape[0]
         n_cols = self.matrix.shape[1]
         table = pd.DataFrame(self.matrix,
@@ -90,6 +117,11 @@ class TSP:
                           )
 
         def path(edges):
+            """
+            Функция нахождения пути
+            :params: edges like list (?)
+            :return: найденный list
+            """
             edges = dict(edges)
             v_set = set(edges.keys())
             lst = []
@@ -110,7 +142,10 @@ class TSP:
                 return []
             return lst[0]
 
-        def score_func(table_):  # приведенная матрица
+        def score_func(table_):
+            """
+            функция
+            """# приведенная матрица
             assert table_.shape[0] > 0
             table = table_.copy()
 
@@ -135,6 +170,11 @@ class TSP:
             return table, bottom_bound
 
         def max_penalty(table):
+            """
+            функция нахождения самого "тяжелого" нуля
+            :params: table (см. выше)
+            :return: самый тяжелый ноль (в виде таблицы с индексом и числом)
+            """
             assert table.shape[0] > 0
             max_zero = 0  # самый тяжелый ноль
             max_zero_edge = (0, 0)
@@ -154,6 +194,9 @@ class TSP:
             return max_zero_edge
 
         def include(leaf_):
+            """
+            функция поис
+            """
             assert leaf_.table.shape[0] > 0
             table = leaf_.table.copy()
             i, j = leaf_.edge
@@ -218,6 +261,11 @@ class TSP:
         return path(min_leaf.included + [min_leaf.edge]), min_leaf.bottom_bound, ii
 
     def countPathCost(self, path):
+        """
+        функция поиска "стоимости" пути
+        :params: путь, найденный выше
+        :return: стоимость пути (число)
+        """
         c = 0
         i = 0
         try:
@@ -230,6 +278,9 @@ class TSP:
 
     @timer
     def Boltsman(self, t0=1, tmin=0.001):
+        """
+        функция
+        """
         def t(k):
             return t0 / np.log(1 + k)
 
