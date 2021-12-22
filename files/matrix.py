@@ -3,12 +3,24 @@ from typing import List
 
 
 class DIYMatrix:
+    """
+    Класс работы с матрицами
+    """
     def __init__(self, ncols: int, nrows: int, elements: List[List[int]]):
+        """
+        :params ncols: количество столбцов в матрице
+        :params nrows: количество строк в матрице
+        :params elements: список элементов матрицы
+        """
         self.matrix = elements
         self._ncols = ncols
         self._nrows = nrows
 
     def transpose(self):
+        """
+        Функция транспорнированния матрицы
+        :return: возвращает транспонированную матрицу
+        """
         t_matrix = []
         for i in range(self._ncols):
             row = []
@@ -18,6 +30,11 @@ class DIYMatrix:
         return DIYMatrix(self._nrows, self._ncols, t_matrix)
 
     def parse_complex(self, s: str):
+        """
+        Функция нахождения комплексного числа в строке
+        :params s: строка с числом
+        :return: возвращает комплексное число, если такое имеется
+        """
         s = s.replace(" ", "")
         pattern_j = re.compile(r"[-]*\d*.\d*j")
         pattern_int = re.compile(r"[+-]\d*$")
@@ -31,6 +48,11 @@ class DIYMatrix:
             return complex(f"{i}{sign}{j}")
 
     def matrix_to_type(self, new_type: type):
+        """
+        Функция перевода матрицу в определённый тип данных
+        :params new_type: желаемый тип матрицы
+        :return: возвращает матрицу в выбранном типе данных
+        """
         if isinstance(self.matrix[0][0], str) and new_type != complex:
             return DIYMatrix(self._ncols, self._nrows, [list(map(lambda x: new_type(x.replace(" ", "")), row)) for row in self.matrix])
         elif isinstance(self.matrix[0][0], str) and new_type == complex:
@@ -39,7 +61,8 @@ class DIYMatrix:
 
     def to_min_type(self):
         """
-            Сonverts matrix to minimal type according to the following gradation: int < float < complex < str
+        Функция переводжа матрицы в минимальный тип используя следующую схему градации: int < float < complex < str
+        :return: возвращает матрицу в минимальном типе данных
         """
         try:
             res_f = self.matrix_to_type(float)
@@ -55,9 +78,9 @@ class DIYMatrix:
 
     def read_from_csv(self, filename: str):
         """
-            Read matrix from csv
-            Input: filename or fullpath to file
-            Output: matrix of 'str' type
+        Функция считывания матрицы из .cvs файла
+        Ввод: Название_файла или полный путь к файлу
+        :return: возвращается матрица типа "str"
         """
         with open(filename) as csvf:
             line = csvf.readline()
@@ -81,7 +104,8 @@ class DIYMatrix:
 
     def write_to_csv(self, filename: str):
         """
-            Writes matrix to file in csv format
+         Функция записи матрицы в формате .csv файла
+         :params filename: имя файла, в который будет записана матрица
         """
         assert isinstance(self, DIYMatrix)
         with open(filename, "w") as f:
@@ -89,6 +113,10 @@ class DIYMatrix:
                 f.write(";".join(map(str, row))+"\n")
 
     def det(self) -> int:
+        """
+        Функция нахождения определителя матрицы
+        :return: возвращается определитель матрицы, округлённый до 0 знаков после запятой
+        """
         if isinstance(self.matrix[0][0], str):
             raise ValueError(
                 "Определитель можно найти только для численных матриц")
@@ -113,6 +141,10 @@ class DIYMatrix:
                 return round(result)
 
     def first_norm(self) -> int:
+        """
+        Функция нахождения первой нормы матрицы
+        :return: возвращается первая норма матрицы
+        """
         max_col = sum(self.matrix[0])
         for j in range(self._ncols):
             s = 0
@@ -123,6 +155,10 @@ class DIYMatrix:
         return max_col
 
     def second_norm(self) -> int:
+        """
+        Функция нахождения второй нормы матрицы
+        :return: возвращается вторая норма матрицы
+        """
         s = 0
         for i in range(self._ncols):
             for j in range(self._nrows):
@@ -130,6 +166,10 @@ class DIYMatrix:
         return s**0.5
 
     def third_norm(self) -> int:
+        """
+        Функция нахождения третьей нормы матрицы
+        :return: возвращается третья норма матрицы
+        """
         ms = sum(self.matrix[0])
         for i in self.matrix:
             s = sum(i)
@@ -138,6 +178,11 @@ class DIYMatrix:
         return ms
 
     def __add__(self, another):
+        """
+        Функция сложения матриц
+        :params another: вторая матрица для выполнения математических действий
+        :return: возвращается результат сложения двух матриц
+        """
         assert self._ncols == another._ncols, "Кол-во столбцов не совпадает"
         assert self._nrows == another._nrows, "Кол-во строк не совпадает"
         assert isinstance(
@@ -154,6 +199,11 @@ class DIYMatrix:
         return DIYMatrix(self._nrows, self._ncols, result)
 
     def __sub__(self, another):
+        """
+        Функция вычитания матриц
+        :params another: вторая матрица для выполнения математических действий
+        :return: возвращается результат вычитания двух матриц
+        """
         assert self._ncols == another._ncols, "Кол-во столбцов не совпадает"
         assert self._nrows == another._nrows, "Кол-во строк не совпадает"
         assert isinstance(
@@ -170,6 +220,11 @@ class DIYMatrix:
         return DIYMatrix(self._ncols, self._nrows, result)
 
     def __mul__(self, another):
+        """
+        Функция умножения матриц
+        :params another: вторая матрица для выполнения математических действий
+        :return: возвращается результат умножения двух матриц
+        """
         if isinstance(another, DIYMatrix):
             assert self._ncols == another._nrows, "Матрицы несовместимы, кол-во столбцов первой матрицы и кол-во строк второй не совпадают"
             assert isinstance(
@@ -189,6 +244,9 @@ class DIYMatrix:
 
     @classmethod
     def keyboard_input(cls):
+        """
+        Функция ручного ввода матрицы
+        """
         while True:
             try:
                 ncols = int(input("Введите количество столбцов матрицы:"))
@@ -212,6 +270,9 @@ class DIYMatrix:
         return DIYMatrix(ncols, nrows, res).to_min_type()
 
     def __str__(self):
+        """
+        Функция вывода матрицы в строку
+        """
         return "\n".join(list(map(str, self.matrix)))
 
     __repr__ = __str__
