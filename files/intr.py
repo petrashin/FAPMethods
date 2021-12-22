@@ -53,7 +53,9 @@ def lagrx_standart(x_values, y_values):
 
 def lagr_cheb(x_values, y_values):
     """
-    Функция,
+    Функция,выполняющая интерполяцию методом Лагранжа (?) (в том случае, если длина массива x > 60 и среднее < 1)
+    :params: массив точек x
+    :params: массив точек y
     """
     x0 = sympy.Symbol('x')
 
