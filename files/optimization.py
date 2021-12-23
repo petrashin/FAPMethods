@@ -22,7 +22,9 @@ def timer(func):
 
 
 class TSP:
-
+    """
+    Класс методов решения задачи комивояжора
+    """
     def __init__(self, matrix):
         self.__matrix = matrix
 
@@ -333,9 +335,9 @@ class TSP:
     def AntColonyMethod(self, n_ants=None, n_best=5, n_iterations=None):
         """
         Реализация Муравьиного алгоритма
-        :params: кол-во муравьев
-        :params:
-        :params: кол-во итераций
+        :params n_ants: кол-во муравьев
+        :params n_best: кол-во путей сохраняемых на каждой итерации
+        :params n_iterations: кол-во итераций
 
         :return: кратчайший цикл, длина цикла
         """
@@ -347,6 +349,9 @@ class TSP:
         alpha = 1
         beta = 1
         class AntColony:
+            """
+            Класс описывающий муравьиную колонию
+            """
             def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha, beta):
 
                 self.distances = distances
@@ -361,6 +366,11 @@ class TSP:
                 self.beta = beta
 
             def run(self):
+                """
+                Функция вычисления кратчайшего цикла в графе
+                :returns: кратчайший из найденных путей и его длина
+
+                """
                 shortest_path = None
                 all_time_shortest_path = ("placeholder", np.inf)
                 for i in range(self.n_iterations):
@@ -374,24 +384,42 @@ class TSP:
                 return self.route_conversion(all_time_shortest_path[0]), all_time_shortest_path[1]
 
             def route_conversion(self, lst):
+                """
+                Преобразует набор ребер в путь
+                :params lst: набор ребер
+                :returns: последовательность из вершин
+                """
                 result = [*lst[0]]
                 for i in range(1, len(lst)):
                     result.append(lst[i][1])
                 return result
 
             def spread_pheronome(self, all_paths, n_best, shortest_path):
+                """
+                Считает значения феромона на ребрах
+                :params all_paths: сгенерированные пути
+                :params n_best: количесво лучших путей
+                """
                 sorted_paths = sorted(all_paths, key=lambda x: x[1])
                 for path, dist in sorted_paths[:n_best]:
                     for move in path:
                         self.pheromone[move] += 1.0 / self.distances[move]
 
             def gen_path_dist(self, path):
+                """
+                :params path: Путь
+                :returns: длина пути
+                """
                 total_dist = 0
                 for ele in path:
                     total_dist += self.distances[ele]
                 return total_dist
 
             def gen_all_paths(self):
+                """
+                Создает n_ants путей
+                :returns: список путей
+                """
                 all_paths = []
                 for i in range(self.n_ants):
                     path = self.gen_path(0)
@@ -399,6 +427,11 @@ class TSP:
                 return all_paths
 
             def gen_path(self, start):
+                """
+                Сгенерировать путь
+                :params start: точка начала пути
+                :returns: замнкутый поуть по всем вершинам
+                """
                 path = []
                 visited = set()
                 visited.add(start)
@@ -413,6 +446,10 @@ class TSP:
                 return path
 
             def pick_move(self, pheromone, dist, visited):
+                """
+                Выбор хода
+                :returns: следующая вершина
+                """
                 pheromone = np.copy(pheromone)
                 pheromone[list(visited)] = 0
                 row = pheromone ** self.alpha * ((1.0 / dist) ** self.beta)
