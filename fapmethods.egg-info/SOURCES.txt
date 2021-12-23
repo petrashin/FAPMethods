@@ -1,0 +1,15 @@
+README.md
+setup.py
+fapmethods/IntApr.py
+fapmethods/__init__.py
+fapmethods/calculus.py
+fapmethods/diffs.py
+fapmethods/matrixes.py
+fapmethods/optimize.py
+fapmethods/solvers.py
+fapmethods/timeanalysis.py
+fapmethods.egg-info/PKG-INFO
+fapmethods.egg-info/SOURCES.txt
+fapmethods.egg-info/dependency_links.txt
+fapmethods.egg-info/requires.txt
+fapmethods.egg-info/top_level.txt
