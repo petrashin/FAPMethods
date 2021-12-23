@@ -346,6 +346,7 @@ class TSP:
         decay = 0.95
         alpha = 1
         beta = 1
+
         class AntColony:
             def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha, beta):
 

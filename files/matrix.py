@@ -18,7 +18,7 @@ class DIYMatrix:
 
     def transpose(self):
         """
-        Функция транспорнированния матрицы
+        Функция транспонирования матрицы
         :return: возвращает транспонированную матрицу
         """
         t_matrix = []
@@ -61,7 +61,7 @@ class DIYMatrix:
 
     def to_min_type(self):
         """
-        Функция переводжа матрицы в минимальный тип используя следующую схему градации: int < float < complex < str
+        Функция перевода матрицы в минимальный тип используя следующую схему градации: int < float < complex < str
         :return: возвращает матрицу в минимальном типе данных
         """
         try:
@@ -134,9 +134,7 @@ class DIYMatrix:
                 for i in range(self._ncols):
                     minor = DIYMatrix(self._ncols-1, self._nrows-1,
                                       list(zip(*temp[:i], *temp[i+1:])))
-#                 print(f"minor{i}: \n{minor}")
                     t = ((-1)**i)*m[0][i]*minor.det()
-#                 print(t)
                     result += t
                 return round(result)
 
